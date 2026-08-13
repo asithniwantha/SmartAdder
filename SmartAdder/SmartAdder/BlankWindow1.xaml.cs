@@ -21,15 +21,11 @@ namespace SmartAdder
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainWindow : Window
+    public sealed partial class BlankWindow1 : Window
     {
-        public MainWindow()
+        public BlankWindow1()
         {
             InitializeComponent();
-        }
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }
