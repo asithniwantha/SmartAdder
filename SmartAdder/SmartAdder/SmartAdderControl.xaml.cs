@@ -38,7 +38,10 @@ namespace SmartAdder.Views
                 e.Handled = true; // Prevent character from being entered
 
                 // Move focus to next element
-                FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+                });
             }
         }
 
