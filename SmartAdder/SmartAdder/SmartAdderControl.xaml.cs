@@ -40,7 +40,11 @@ namespace SmartAdder.Views
                 // Move focus to next element
                 DispatcherQueue.TryEnqueue(() =>
                 {
-                    FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+                    var next = FocusManager.FindNextElement(FocusNavigationDirection.Next);
+                    if (next != null)
+                    {
+                        FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+                    }
                 });
             }
         }
