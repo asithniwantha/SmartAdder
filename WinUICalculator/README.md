@@ -35,3 +35,4 @@ xmlns:views="using:YourAppNamespace.Views"
 ```
 
 The control handles its own ViewModel instantiation and data binding internally.
+ add auto hide
