@@ -37,8 +37,13 @@ namespace SmartAdder.Views
             {
                 e.Handled = true; // Prevent character from being entered
 
-                // Move focus to next element
-                FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+                // Move focus to next element safely using FindNextElementOptions
+                var options = new FindNextElementOptions
+                {
+                    SearchRoot = this.XamlRoot?.Content
+                };
+
+                FocusManager.TryMoveFocus(FocusNavigationDirection.Next, options);
             }
         }
 
