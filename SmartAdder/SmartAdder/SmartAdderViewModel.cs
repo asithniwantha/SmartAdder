@@ -39,6 +39,17 @@ namespace SmartAdder.ViewModels
             Cells.Add(newCell);
         }
 
+        public void RemoveCell(NumberCell cell)
+        {
+            if (cell != null && Cells.Contains(cell))
+            {
+                cell.PropertyChanged -= OnCellPropertyChanged;
+                Cells.Remove(cell);
+                RecalculateSum();
+                EnsureEmptyCellAtBottom();
+            }
+        }
+
         private void OnCellPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             // Whenever a user types into a textbox, this fires
