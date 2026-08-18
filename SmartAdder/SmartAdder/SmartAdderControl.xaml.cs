@@ -33,13 +33,50 @@ namespace SmartAdder.Views
                 }
             }
 
-            if (e.Key == VirtualKey.Enter || isPlus)
+            var options = new FindNextElementOptions
             {
-                e.Handled = true; // Prevent character from being entered
+                SearchRoot = this.XamlRoot?.Content
+            };
 
-                // Move focus to next element
-                FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
+            if (e.Key == VirtualKey.Enter || isPlus || e.Key == VirtualKey.Down)
+            {
+                e.Handled = true; // Prevent character from being entered or default action
+
+                var next = FocusManager.FindNextElement(FocusNavigationDirection.Down, options);
+                if (next is Control control)
+                {
+                    var tb = FindInnerTextBox(next);
+                    if (tb != null) tb.Focus(FocusState.Keyboard);
+                    else control.Focus(FocusState.Keyboard);
+                }
             }
+            else if (e.Key == VirtualKey.Up)
+            {
+                e.Handled = true; // Prevent default action
+
+                var next = FocusManager.FindNextElement(FocusNavigationDirection.Up, options);
+                if (next is Control control)
+                {
+                    var tb = FindInnerTextBox(next);
+                    if (tb != null) tb.Focus(FocusState.Keyboard);
+                    else control.Focus(FocusState.Keyboard);
+                }
+            }
+        }
+
+        private TextBox FindInnerTextBox(DependencyObject parent)
+        {
+            if (parent is TextBox tb) return tb;
+            if (parent == null) return null;
+
+            int count = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < count; i++)
+            {
+                var child = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(parent, i);
+                var result = FindInnerTextBox(child);
+                if (result != null) return result;
+            }
+            return null;
         }
 
         private void TextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
