@@ -33,17 +33,24 @@ namespace SmartAdder.Views
                 }
             }
 
-            if (e.Key == VirtualKey.Enter || isPlus)
+            var options = new FindNextElementOptions
             {
-                e.Handled = true; // Prevent character from being entered
+                SearchRoot = this.XamlRoot?.Content
+            };
 
-                // Move focus to next element safely using FindNextElementOptions
-                var options = new FindNextElementOptions
-                {
-                    SearchRoot = this.XamlRoot?.Content
-                };
+            if (e.Key == VirtualKey.Enter || isPlus || e.Key == VirtualKey.Down)
+            {
+                e.Handled = true; // Prevent character from being entered or default action
 
-                FocusManager.TryMoveFocus(FocusNavigationDirection.Next, options);
+                // Move focus specifically downwards to the next cell
+                FocusManager.TryMoveFocus(FocusNavigationDirection.Down, options);
+            }
+            else if (e.Key == VirtualKey.Up)
+            {
+                e.Handled = true; // Prevent default action
+
+                // Move focus specifically upwards to the previous cell
+                FocusManager.TryMoveFocus(FocusNavigationDirection.Up, options);
             }
         }
 
