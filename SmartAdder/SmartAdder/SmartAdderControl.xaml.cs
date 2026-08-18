@@ -42,16 +42,41 @@ namespace SmartAdder.Views
             {
                 e.Handled = true; // Prevent character from being entered or default action
 
-                // Move focus specifically downwards to the next cell
-                FocusManager.TryMoveFocus(FocusNavigationDirection.Down, options);
+                var next = FocusManager.FindNextElement(FocusNavigationDirection.Down, options);
+                if (next is Control control)
+                {
+                    var tb = FindInnerTextBox(next);
+                    if (tb != null) tb.Focus(FocusState.Keyboard);
+                    else control.Focus(FocusState.Keyboard);
+                }
             }
             else if (e.Key == VirtualKey.Up)
             {
                 e.Handled = true; // Prevent default action
 
-                // Move focus specifically upwards to the previous cell
-                FocusManager.TryMoveFocus(FocusNavigationDirection.Up, options);
+                var next = FocusManager.FindNextElement(FocusNavigationDirection.Up, options);
+                if (next is Control control)
+                {
+                    var tb = FindInnerTextBox(next);
+                    if (tb != null) tb.Focus(FocusState.Keyboard);
+                    else control.Focus(FocusState.Keyboard);
+                }
             }
+        }
+
+        private TextBox FindInnerTextBox(DependencyObject parent)
+        {
+            if (parent is TextBox tb) return tb;
+            if (parent == null) return null;
+
+            int count = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < count; i++)
+            {
+                var child = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(parent, i);
+                var result = FindInnerTextBox(child);
+                if (result != null) return result;
+            }
+            return null;
         }
 
         private void TextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
