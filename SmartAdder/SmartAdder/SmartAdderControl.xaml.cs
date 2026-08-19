@@ -38,51 +38,7 @@ namespace SmartAdder.Views
                 SearchRoot = this.XamlRoot?.Content
             };
 
-            if (e.Key == VirtualKey.Delete)
-            {
-                e.Handled = true;
-
-                if (ViewModel.Cells.Count == 1)
-                {
-                    if (sender is TextBox textBox)
-                    {
-                        textBox.Text = string.Empty;
-                        if (textBox.DataContext is SmartAdder.Models.NumberCell cell)
-                        {
-                            cell.InputValue = string.Empty;
-                        }
-                    }
-                }
-                else
-                {
-                    if (sender is TextBox textBox && textBox.DataContext is SmartAdder.Models.NumberCell cell)
-                    {
-                        ViewModel.RemoveCell(cell);
-
-                        // Wait for layout to update before trying to focus the last element
-                        _ = DispatcherQueue.TryEnqueue(() =>
-                        {
-                            if (ViewModel.Cells.Count > 0)
-                            {
-                                var lastCell = ViewModel.Cells[ViewModel.Cells.Count - 1];
-                                CellListView.ScrollIntoView(lastCell);
-                                CellListView.UpdateLayout();
-
-                                var container = CellListView.ContainerFromItem(lastCell) as ListViewItem;
-                                if (container != null)
-                                {
-                                    var innerTb = FindInnerTextBox(container);
-                                    if (innerTb != null)
-                                    {
-                                        innerTb.Focus(FocusState.Keyboard);
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-            else if (e.Key == VirtualKey.Enter || isPlus || e.Key == VirtualKey.Down)
+            if (e.Key == VirtualKey.Enter || isPlus || e.Key == VirtualKey.Down)
             {
                 e.Handled = true; // Prevent character from being entered or default action
 
