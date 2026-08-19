@@ -2,10 +2,14 @@
     x:Class="SmartAdder.Views.SmartAdderControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:models="using:SmartAdder.Models">
+    xmlns:models="using:SmartAdder.Models"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:SmartAdder.Behaviors">
 
-    <Grid x:Name="RootGrid" Padding="24" MaxWidth="400" HorizontalAlignment="Left" Background="Transparent"
-          PointerEntered="RootGrid_PointerEntered" PointerExited="RootGrid_PointerExited">
+    <Grid x:Name="RootGrid" Padding="24" MaxWidth="400" HorizontalAlignment="Left" Background="Transparent">
+        <interactivity:Interaction.Behaviors>
+            <behaviors:HoverBehavior IsHovering="{x:Bind ViewModel.IsHovering, Mode=TwoWay}" />
+        </interactivity:Interaction.Behaviors>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -39,9 +43,10 @@
                   ItemsSource="{x:Bind ViewModel.Cells}" 
                   SelectionMode="None"
                   ShowsScrollingPlaceholders="False"
-                  Visibility="{x:Bind ViewModel.ListVisibility, Mode=OneWay}"
-                  GotFocus="CellListView_GotFocus"
-                  LostFocus="CellListView_LostFocus">
+                  Visibility="{x:Bind ViewModel.ListVisibility, Mode=OneWay}">
+            <interactivity:Interaction.Behaviors>
+                <behaviors:FocusWithinBehavior IsFocused="{x:Bind ViewModel.IsListFocused, Mode=TwoWay}" />
+            </interactivity:Interaction.Behaviors>
 
             <!-- Remove standard ListView styling/padding for a cleaner "Excel" look -->
             <ListView.ItemContainerStyle>
@@ -58,9 +63,11 @@
                              PlaceholderText="Enter number"
                              InputScope="Number"
                              Width="200"
-                             HorizontalAlignment="Left"
-                             PreviewKeyDown="TextBox_PreviewKeyDown"
-                             TextChanging="TextBox_TextChanging"/>
+                             HorizontalAlignment="Left">
+                        <interactivity:Interaction.Behaviors>
+                            <behaviors:NumericTextBoxBehavior />
+                        </interactivity:Interaction.Behaviors>
+                    </TextBox>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
