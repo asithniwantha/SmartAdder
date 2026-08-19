@@ -6,7 +6,7 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviors="using:SmartAdder.Behaviors">
 
-    <Grid x:Name="RootGrid" Padding="24" MaxWidth="400" HorizontalAlignment="Left" Background="Transparent">
+    <Grid x:Name="RootGrid" Padding="24" MaxWidth="400" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent">
         <interactivity:Interaction.Behaviors>
             <behaviors:HoverBehavior IsHovering="{x:Bind ViewModel.IsHovering, Mode=TwoWay}" />
         </interactivity:Interaction.Behaviors>
