@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="using:SmartAdder.Models">
 
-    <Grid x:Name="RootGrid" Padding="24" MaxWidth="400" HorizontalAlignment="Left"
+    <Grid x:Name="RootGrid" Padding="24" MaxWidth="400" HorizontalAlignment="Left" VerticalAlignment="Top"
           PointerEntered="RootGrid_PointerEntered"
           PointerExited="RootGrid_PointerExited"
           GotFocus="RootGrid_GotFocus"
