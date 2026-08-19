@@ -1,18 +1,11 @@
 using Microsoft.Data.Sqlite;
+using SmartAdder.Models;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
 
 namespace SmartAdder.Services
 {
-    public class HistoryRecord
-    {
-        public int Id { get; set; }
-        public DateTime Timestamp { get; set; }
-        public List<double> Entries { get; set; } = new List<double>();
-        public double TotalSum { get; set; }
-    }
-
     public class DatabaseService
     {
         private readonly string _dbPath = "history.db";

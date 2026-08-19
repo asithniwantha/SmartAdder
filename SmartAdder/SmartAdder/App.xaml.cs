@@ -29,7 +29,7 @@ namespace SmartAdder
 
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            _window = new MainWindow();
+            _window = new SmartAdder.Views.MainWindow();
             _window.Activate();
         }
 

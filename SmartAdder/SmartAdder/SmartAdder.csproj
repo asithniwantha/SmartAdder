@@ -15,8 +15,9 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="BlankWindow1.xaml" />
-    <None Remove="SmartAdderControl.xaml" />
+    <None Remove="Views\BlankWindow1.xaml" />
+    <None Remove="Views\SmartAdderControl.xaml" />
+    <None Remove="Views\MainWindow.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,17 +29,24 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="3.0.1" />
     <PackageReference Include="SQLite" Version="3.53.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="SmartAdderControl.xaml">
+    <Page Update="Views\SmartAdderControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="BlankWindow1.xaml">
+    <Page Update="Views\BlankWindow1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
