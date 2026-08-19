@@ -135,7 +135,8 @@ namespace SmartAdder.ViewModels
                 var listView = new ListView
                 {
                     ItemsSource = history,
-                    ItemTemplate = CreateHistoryTemplate()
+                    ItemTemplate = CreateHistoryTemplate(),
+                    SelectionMode = ListViewSelectionMode.None
                 };
                 contentDialog.Content = listView;
             }
@@ -155,13 +156,28 @@ namespace SmartAdder.ViewModels
         {
             string xaml = @"
             <DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
-                <StackPanel Margin=""0,0,0,12"">
-                    <TextBlock Text=""{Binding Timestamp}"" FontWeight=""Bold"" />
-                    <StackPanel Orientation=""Horizontal"">
-                        <TextBlock Text=""Total: "" />
-                        <TextBlock Text=""{Binding TotalSum}"" />
+                <Button Background=""Transparent"" BorderThickness=""0"" Padding=""0"" HorizontalAlignment=""Stretch"" HorizontalContentAlignment=""Stretch"">
+                    <Button.Flyout>
+                        <Flyout>
+                            <ScrollViewer MaxHeight=""300"">
+                                <ItemsControl ItemsSource=""{Binding Entries}"">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text=""{Binding}"" Margin=""0,0,0,4"" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Flyout>
+                    </Button.Flyout>
+                    <StackPanel Margin=""0,0,0,12"">
+                        <TextBlock Text=""{Binding Timestamp}"" FontWeight=""Bold"" />
+                        <StackPanel Orientation=""Horizontal"">
+                            <TextBlock Text=""Total: "" />
+                            <TextBlock Text=""{Binding TotalSum}"" />
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
+                </Button>
             </DataTemplate>";
             return (Microsoft.UI.Xaml.DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml);
         }
