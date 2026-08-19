@@ -33,8 +33,7 @@
         </Grid>
 
         <!-- Dynamic Cell List -->
-        <ListView x:Name="CellListView"
-                  Grid.Row="1"
+        <ListView Grid.Row="1" 
                   ItemsSource="{x:Bind ViewModel.Cells}" 
                   SelectionMode="None"
                   ShowsScrollingPlaceholders="False">
