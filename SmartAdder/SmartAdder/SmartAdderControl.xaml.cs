@@ -13,9 +13,63 @@ namespace SmartAdder.Views
     {
         public SmartAdderViewModel ViewModel { get; } = new SmartAdderViewModel();
 
+        private bool _isPointerOver = false;
+        private bool _isDeletingCell = false;
+
         public SmartAdderControl()
         {
             this.InitializeComponent();
+        }
+
+        private void RootGrid_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            _isPointerOver = true;
+            CellListView.Visibility = Visibility.Visible;
+        }
+
+        private void RootGrid_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            _isPointerOver = false;
+            CheckAndCollapseList();
+        }
+
+        private void RootGrid_GotFocus(object sender, RoutedEventArgs e)
+        {
+            CellListView.Visibility = Visibility.Visible;
+        }
+
+        private void RootGrid_LostFocus(object sender, RoutedEventArgs e)
+        {
+            CheckAndCollapseList();
+        }
+
+        private void CheckAndCollapseList()
+        {
+            if (_isDeletingCell) return;
+
+            if (!_isPointerOver && !IsFocusInside())
+            {
+                CellListView.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private bool IsFocusInside()
+        {
+            var focusedElement = FocusManager.GetFocusedElement(this.XamlRoot);
+            if (focusedElement is DependencyObject dobj)
+            {
+                // Walk up the visual tree to see if the focused element is a child of RootGrid
+                var current = dobj;
+                while (current != null)
+                {
+                    if (current == RootGrid)
+                    {
+                        return true;
+                    }
+                    current = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(current);
+                }
+            }
+            return false;
         }
 
         private void TextBox_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
@@ -57,6 +111,7 @@ namespace SmartAdder.Views
                 {
                     if (sender is TextBox textBox && textBox.DataContext is SmartAdder.Models.NumberCell cell)
                     {
+                        _isDeletingCell = true;
                         ViewModel.RemoveCell(cell);
 
                         // Wait for layout to update before trying to focus the last element
@@ -78,6 +133,9 @@ namespace SmartAdder.Views
                                     }
                                 }
                             }
+
+                            _isDeletingCell = false;
+                            CheckAndCollapseList();
                         });
                     }
                 }
