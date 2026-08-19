@@ -20,6 +20,34 @@ namespace SmartAdder.ViewModels
         [ObservableProperty]
         private double _totalSum;
 
+        private bool _isHovering;
+        public bool IsHovering
+        {
+            get => _isHovering;
+            set
+            {
+                if (SetProperty(ref _isHovering, value))
+                {
+                    OnPropertyChanged(nameof(ListVisibility));
+                }
+            }
+        }
+
+        private bool _isListFocused;
+        public bool IsListFocused
+        {
+            get => _isListFocused;
+            set
+            {
+                if (SetProperty(ref _isListFocused, value))
+                {
+                    OnPropertyChanged(nameof(ListVisibility));
+                }
+            }
+        }
+
+        public Visibility ListVisibility => (IsHovering || IsListFocused) ? Visibility.Visible : Visibility.Collapsed;
+
         private readonly DatabaseService _databaseService;
 
         public SmartAdderViewModel()

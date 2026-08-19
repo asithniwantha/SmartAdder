@@ -18,6 +18,54 @@ namespace SmartAdder.Views
             this.InitializeComponent();
         }
 
+        private void RootGrid_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            ViewModel.IsHovering = true;
+        }
+
+        private void RootGrid_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            ViewModel.IsHovering = false;
+        }
+
+        private void CellListView_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ViewModel.IsListFocused = true;
+        }
+
+        private void CellListView_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // Delay checking focus to allow the new element to receive focus
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                var focusedElement = FocusManager.GetFocusedElement(this.XamlRoot);
+                if (focusedElement is DependencyObject depObj)
+                {
+                    // Check if the newly focused element is a child of the CellListView
+                    bool isFocusInList = false;
+                    DependencyObject current = depObj;
+                    while (current != null)
+                    {
+                        if (current == CellListView)
+                        {
+                            isFocusInList = true;
+                            break;
+                        }
+                        current = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(current);
+                    }
+
+                    if (!isFocusInList)
+                    {
+                        ViewModel.IsListFocused = false;
+                    }
+                }
+                else
+                {
+                    ViewModel.IsListFocused = false;
+                }
+            });
+        }
+
         private void TextBox_PreviewKeyDown(object sender, KeyRoutedEventArgs e)
         {
             // + key can come from numpad (Add) or keyboard (187 or Shift+=)
