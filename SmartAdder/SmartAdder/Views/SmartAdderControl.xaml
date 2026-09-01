@@ -1,5 +1,6 @@
 <UserControl
     x:Class="SmartAdder.Views.SmartAdderControl"
+    x:Name="RootControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="using:SmartAdder.Models"
@@ -23,18 +24,18 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0">
-                <TextBlock Text="Total Sum" FontSize="14" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
-                <TextBlock Text="{x:Bind ViewModel.TotalSum, Mode=OneWay}" FontSize="42" FontWeight="SemiBold"/>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="{x:Bind ViewModel.TotalSum, Mode=OneWay}" FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center"/>
+
+                <!--next two buttons after the textblock-->
+                <Button Grid.Column="1" Command="{x:Bind ViewModel.ClearAllCommand}" ToolTipService.ToolTip="Clear all" Width="32" Height="32" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="8,0,0,0">
+                    <SymbolIcon Symbol="Clear" />
+                </Button>
+
+                <Button Grid.Column="2" Command="{x:Bind ViewModel.ViewHistoryCommand}" ToolTipService.ToolTip="View history" Width="32" Height="32" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="4,0,0,0">
+                    <SymbolIcon Symbol="Clock" />
+                </Button>
             </StackPanel>
-
-            <Button Grid.Column="1" Command="{x:Bind ViewModel.ClearAllCommand}" ToolTipService.ToolTip="Clear all" Width="36" Height="36" Margin="0,0,8,0" VerticalAlignment="Center">
-                <SymbolIcon Symbol="Clear" />
-            </Button>
-
-            <Button Grid.Column="2" Command="{x:Bind ViewModel.ViewHistoryCommand}" ToolTipService.ToolTip="View history" Width="36" Height="36" VerticalAlignment="Center">
-                <SymbolIcon Symbol="Clock" />
-            </Button>
         </Grid>
 
         <!-- Dynamic Cell List -->
@@ -62,10 +63,10 @@
                     <TextBox Text="{x:Bind InputValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              PlaceholderText="Enter number"
                              InputScope="Number"
-                             Width="200"
+                             Width="80"
                              HorizontalAlignment="Left">
                         <interactivity:Interaction.Behaviors>
-                            <behaviors:NumericTextBoxBehavior />
+                            <behaviors:NumericTextBoxBehavior DeleteCommand="{Binding ElementName=RootControl, Path=ViewModel.DeleteCellCommand}" />
                         </interactivity:Interaction.Behaviors>
                     </TextBox>
                 </DataTemplate>

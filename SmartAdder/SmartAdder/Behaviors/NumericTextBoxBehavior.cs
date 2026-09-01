@@ -4,13 +4,28 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.Xaml.Interactivity;
 using System;
 using System.Text.RegularExpressions;
+using System.Windows.Input;
 using Windows.System;
 using Microsoft.UI.Input;
+using Microsoft.UI.Dispatching;
 
 namespace SmartAdder.Behaviors
 {
     public class NumericTextBoxBehavior : Behavior<TextBox>
     {
+        public static readonly DependencyProperty DeleteCommandProperty =
+            DependencyProperty.Register(
+                nameof(DeleteCommand),
+                typeof(ICommand),
+                typeof(NumericTextBoxBehavior),
+                new PropertyMetadata(null));
+
+        public ICommand? DeleteCommand
+        {
+            get => (ICommand?)GetValue(DeleteCommandProperty);
+            set => SetValue(DeleteCommandProperty, value);
+        }
+
         protected override void OnAttached()
         {
             base.OnAttached();
@@ -67,9 +82,49 @@ namespace SmartAdder.Behaviors
                     else control.Focus(FocusState.Keyboard);
                 }
             }
+            else if (e.Key == VirtualKey.Delete)
+            {
+                e.Handled = true;
+
+                var command = DeleteCommand;
+                var cell = AssociatedObject.DataContext;
+
+                if (command != null && command.CanExecute(cell))
+                {
+                    var listView = FindAncestor<ListView>(AssociatedObject);
+                    var dispatcherQueue = AssociatedObject.DispatcherQueue;
+
+                    command.Execute(cell);
+
+                    if (listView != null)
+                    {
+                        dispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () => FocusLastCell(listView));
+                    }
+                }
+            }
         }
 
-        private TextBox FindInnerTextBox(DependencyObject parent)
+        private static void FocusLastCell(ListView listView)
+        {
+            if (listView.Items.Count == 0) return;
+
+            var lastItem = listView.Items[listView.Items.Count - 1];
+            var container = listView.ContainerFromItem(lastItem);
+            var tb = container != null ? FindInnerTextBox(container) : null;
+            tb?.Focus(FocusState.Keyboard);
+        }
+
+        private static T? FindAncestor<T>(DependencyObject child) where T : DependencyObject
+        {
+            var parent = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(child);
+            while (parent != null && parent is not T)
+            {
+                parent = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(parent);
+            }
+            return parent as T;
+        }
+
+        private static TextBox? FindInnerTextBox(DependencyObject parent)
         {
             if (parent is TextBox tb) return tb;
             if (parent == null) return null;

@@ -2,11 +2,12 @@ using Microsoft.Data.Sqlite;
 using SmartAdder.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace SmartAdder.Services
 {
-    public class DatabaseService
+    public class DatabaseService : IDatabaseService
     {
         private readonly string _dbPath = "history.db";
 
@@ -15,10 +16,16 @@ namespace SmartAdder.Services
             InitializeDatabase();
         }
 
+        private SqliteConnection CreateOpenConnection()
+        {
+            var connection = new SqliteConnection($"Data Source={_dbPath}");
+            connection.Open();
+            return connection;
+        }
+
         private void InitializeDatabase()
         {
-            using var connection = new SqliteConnection($"Data Source={_dbPath}");
-            connection.Open();
+            using var connection = CreateOpenConnection();
 
             var command = connection.CreateCommand();
             command.CommandText = @"
@@ -34,8 +41,7 @@ namespace SmartAdder.Services
 
         public void SaveHistory(string entries, double totalSum)
         {
-            using var connection = new SqliteConnection($"Data Source={_dbPath}");
-            connection.Open();
+            using var connection = CreateOpenConnection();
 
             var command = connection.CreateCommand();
             command.CommandText = @"
@@ -52,8 +58,7 @@ namespace SmartAdder.Services
         public List<HistoryRecord> GetHistory()
         {
             var results = new List<HistoryRecord>();
-            using var connection = new SqliteConnection($"Data Source={_dbPath}");
-            connection.Open();
+            using var connection = CreateOpenConnection();
 
             var command = connection.CreateCommand();
             command.CommandText = "SELECT Id, Timestamp, Entries, TotalSum FROM History ORDER BY Timestamp DESC";
@@ -69,10 +74,15 @@ namespace SmartAdder.Services
                 };
 
                 var entriesJson = reader.GetString(2);
-                try {
+                try
+                {
                     var entries = JsonSerializer.Deserialize<List<double>>(entriesJson);
                     if (entries != null) record.Entries = entries;
-                } catch { }
+                }
+                catch (JsonException ex)
+                {
+                    Debug.WriteLine($"Failed to deserialize history entries for record {record.Id}: {ex.Message}");
+                }
 
                 results.Add(record);
             }
